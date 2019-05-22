@@ -15,7 +15,7 @@
 #include <rohc/rohc_comp.h>
 
 #define ROHC_COMPRESSION
-#undef ROHC_COMPRESSION
+//#undef ROHC_COMPRESSION
 
 #define PAYLOAD_SIZE    1400
 #define NUM_TO_MSGDX(n) (n << 16)
@@ -25,11 +25,11 @@
 #define MAX_BUFFER_REC_WINDOW 			1
 #define MAX_SOCKET_CONNECTION 			100
 #define BUFFER_SIZE 					10000
-#define PACKET_SIZE						40
-#define NUMBER_OF_PACKETS_SEND			8000
+#define PACKET_SIZE						1500
+#define NUMBER_OF_PACKETS_SEND			4000
 
-//#define TRAFFIC_MODEL_ENABLE
-
+#define TRAFFIC_MODEL_ENABLE
+#undef TRAFFIC_MODEL_ENABLE
 
 
 //******************************************************************************

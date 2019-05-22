@@ -200,7 +200,13 @@ VOID MsgReceive(INT32 connectedSockFd, int dataBaseID)
 				pdcpUplinkMsg.rohc_packet.offset = pdcpDataReqMsg.rohc_packet.offset;
 				pdcpUplinkMsg.rohc_packet.max_len = pdcpDataReqMsg.rohc_packet.max_len;
 				memcpy (pdcpUplinkMsg.rohc_packet.ipData, pdcpDataReqMsg.rohc_packet.ipData, ROHC_BUFFER_SIZE);
-		memcpy (pdcpUplinkMsg.rohc_packet.dataBuffer, pdcpDataReqMsg.rohc_packet.dataBuffer, SDU_BUFFER_SIZE);
+				memcpy (pdcpUplinkMsg.rohc_packet.dataBuffer, pdcpDataReqMsg.rohc_packet.dataBuffer, SDU_BUFFER_SIZE);
+
+
+				//Check created msg
+//				pdcpUplinkMsg.rohc_packet.dataBuffer += ((sizeof(UINT32))+ (sizeof(UINT32)));
+				    	sdu_size_t test = ((PDCP_DATA_REQ_FUNC_T*)temppdcpReceiveBuffer)->sdu_buffer_size;
+//				    	pdcpUplinkMsg.rohc_packet.dataBuffer = pdcpUplinkMsg.rohc_packet.dataBuffer - ((sizeof(UINT32))+ (sizeof(UINT32)));
 
 	#else
 		memcpy (&pdcpUplinkMsg.buffer, pdcpDataReqMsg.buffer, SDU_BUFFER_SIZE);
@@ -358,12 +364,26 @@ void * pdcp_packet_generator (void *arg)
 			printf("PDCP module start failed!!! \n");
 			exit(EXIT_FAILURE);
 		}*/
-	sdu_size_t test = ((PDCP_DATA_REQ_FUNC_T*)pData)->sdu_buffer_size;
+
 //	test = ((PDCP_DATA_REQ_FUNC_T*)pData)->sdu_buffer_size;
 #ifndef TRAFFIC_MODEL_ENABLE
     MsgInsertFunc (PDCP_DATA_REQ_FUNC, sizeof (PDCP_DATA_REQ_FUNC_T), &pdcpDataReqFuncMsg, &sendBuffer);
-#endif
+/*	UINT32 msgID = PDCP_DATA_REQ_FUNC;
+	memcpy(pData, &msgID, sizeof(UINT32));
+	pData += sizeof(UINT32);
 
+	UINT32 msgId = ((EXT_MSG_T*)pData)->msgId;
+
+	UINT32 msgSize = sizeof (PDCP_DATA_REQ_FUNC_T);
+	memcpy(pData, &msgSize, sizeof(UINT32));
+	pData += sizeof(UINT32);
+
+
+	memcpy(pData, &pdcpDataReqFuncMsg, sizeof (PDCP_DATA_REQ_FUNC_T));
+
+	pData = pData - ((sizeof(lrmExtMsg.msgId))+ (sizeof(lrmExtMsg.msgSize)));*/
+#endif
+//	 msgId = ((EXT_MSG_T*)pData)->msgId;
     int responseBufferSize = (sizeof(lrmExtMsg.msgId))+ (sizeof(lrmExtMsg.msgSize))+ sizeof (PDCP_DATA_REQ_FUNC_T);
 
 
@@ -372,7 +392,7 @@ void * pdcp_packet_generator (void *arg)
 	int i;
     for (i= 0; i<NUMBER_OF_PACKETS_SEND; i++)
     {
-    	test = ((PDCP_DATA_REQ_FUNC_T*)pData)->sdu_buffer_size;
+ //   	test = ((PDCP_DATA_REQ_FUNC_T*)pData)->sdu_buffer_size;
 #ifdef TRAFFIC_MODEL_ENABLE
     	pdcpDataReqFuncMsg.sdu_buffer_size = (sdu_size_t) (pkt_size[i]);
 
@@ -383,6 +403,12 @@ void * pdcp_packet_generator (void *arg)
 //    		printf ("check\n");
 
 //    	int retValue = send(activeRequests[dbID].sockFD,activeRequests[dbID].pData,responseBufferSize,0);
+
+//Check created msg
+/*        pData += ((sizeof(lrmExtMsg.msgId))+ (sizeof(lrmExtMsg.msgSize)));
+    	sdu_size_t test = ((PDCP_DATA_REQ_FUNC_T*)pData)->sdu_buffer_size;
+    	pData = pData - ((sizeof(lrmExtMsg.msgId))+ (sizeof(lrmExtMsg.msgSize)));*/
+
     	int retValue = send(activeRequests[dbID].sockFD,pData,responseBufferSize,0);
 
         printf("Sent msg on Fd (%d) \n\n",activeRequests[dbID].sockFD );
@@ -431,7 +457,7 @@ void * thread_launcher (void *arg)
             printf("Failed to create thread\n");
             exit(EXIT_FAILURE);
         } else
-        	usleep (2000);
+        	usleep (1600);
     }
     for (i=0; i<noThread; i++)
     {
