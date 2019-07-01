@@ -205,7 +205,7 @@ VOID MsgReceive(INT32 connectedSockFd, int dataBaseID)
 
 				//Check created msg
 //				pdcpUplinkMsg.rohc_packet.dataBuffer += ((sizeof(UINT32))+ (sizeof(UINT32)));
-				    	sdu_size_t test = ((PDCP_DATA_REQ_FUNC_T*)temppdcpReceiveBuffer)->sdu_buffer_size;
+//				    	sdu_size_t test = ((PDCP_DATA_REQ_FUNC_T*)temppdcpReceiveBuffer)->sdu_buffer_size;
 //				    	pdcpUplinkMsg.rohc_packet.dataBuffer = pdcpUplinkMsg.rohc_packet.dataBuffer - ((sizeof(UINT32))+ (sizeof(UINT32)));
 
 	#else
@@ -315,7 +315,14 @@ void * pdcp_packet_generator (void *arg)
 	pdcpDataReqFuncMsg.confirmP				= 40;
 	pdcpDataReqFuncMsg.sdu_buffer_size		= PACKET_SIZE;
 	pdcpDataReqFuncMsg.mode					= PDCP_TRANSMISSION_MODE_DATA;
-	pdcpDataReqFuncMsg.qci					= qci_5g_value [rand () % 11];
+	do
+	{
+		pdcpDataReqFuncMsg.qci					= qci_5g_value [rand () % 11];
+	} while (pdcpDataReqFuncMsg.qci <= 0);
+
+//	pdcpDataReqFuncMsg.qci = 3;
+
+
 
 	unsigned char *buffer = "NOTE 4: If the keys CK, IK resulting from an EPS AKA run were stored in the fields already available on "
 			"the USIM for storing keys CK and IK this could lead to overwriting keys resulting from an earlier run of UMTS AKA. This "
