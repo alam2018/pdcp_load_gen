@@ -285,6 +285,7 @@ void * pdcp_packet_generator (void *arg)
 #ifdef TRAFFIC_MODEL_ENABLE
 	int pkt_size[NUMBER_OF_PACKETS_SEND], pkt_wait[NUMBER_OF_PACKETS_SEND];
 	on_off_main(pkt_size, pkt_wait);
+//	exit(0);
 #endif
 
 //    sleep (1);
@@ -438,6 +439,7 @@ void * pdcp_packet_generator (void *arg)
     	unsigned int t = pkt_wait[i] / 1000;
     	usleep (t);
 #else
+//    	usleep (rand()%1000000);
     	usleep (rand()%100000);
 #endif
 //    	nanosleep_manually_compensated (pkt_wait[i]);
@@ -619,7 +621,7 @@ int main (INT32 argc, INT8 **argv)
 	{
 		for (i= 0; i<noConnection; i++)
 		{
-
+			usleep (10000);
 
 		    gConnectSockFdUplink[i] = socket(AF_INET, SOCK_STREAM, 0);
 

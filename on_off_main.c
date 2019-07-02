@@ -49,8 +49,8 @@ void goChild(TOneSourceOnOff src, int *pkt_size, int *pkt_time)
 		else
 			printf("UDP (CBR) ");
 
-//		printDistributions(src.Don, dataOn, 1, verbose > 0);
-//		printDistributions(src.Doff, dataOff, 0, verbose > 0);
+//		printDistributions(src.Don, dataOn, 1, 0);
+//		printDistributions(src.Doff, dataOff, 0, 0);
 	} else {
 //		nanosleep_manually_compensated(src.delay_before_start, NULL);
 
@@ -77,20 +77,23 @@ POneSourceOnOff initializeOneSourceOnOff(POneSourceOnOff nextOne)
 	newsource->receiver 		= true;
 	newsource->ipv4 			= true;
 
-	newsource->Don.type			= weibull;
+//	newsource->Don.type			= weibull;
+	newsource->Don.type			= pareto;
 	newsource->Don.max 			= 1500; /* in bytes per timeunit */
 	newsource->Don.min 			= 50; /* in bytes per timeunit */
-	newsource->Don.lambda 		= 1.0;
+	newsource->Don.lambda 		= 0.45;
 	newsource->Don.k 			= 0.74;
 	newsource->Don.avg 			= (double) newsource->Don.max * 0.5;
 	newsource->Don.sigma 		= (double) newsource->Don.max * 0.1;
-	newsource->Don.alpha 		= 0.36;
+//	newsource->Don.alpha 		= 0.36;
+	newsource->Don.alpha 		= 0.16;
 	newsource->Don.xm 			= 4.0;
 
-	newsource->Doff.type		= poisson;
+//	newsource->Doff.type		= poisson;
+	newsource->Doff.type		= normal;
 	newsource->Doff.max 		= (myInteger) (0.1 * MS_IN_NS); /* in ns */
 	newsource->Doff.min 		= (myInteger) (.001*MS_IN_NS); /* in ns */
-	newsource->Doff.lambda 		= 0.55;
+	newsource->Doff.lambda 		= 0.05;
 	newsource->Doff.k 			= 0.74;
 	newsource->Doff.avg 		= (double) newsource->Doff.max * 0.5;
 	newsource->Doff.sigma 		= (double) newsource->Doff.max * 0.1;
